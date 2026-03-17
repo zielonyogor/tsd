@@ -1,36 +1,32 @@
-﻿using GoldSavings.App.Model;
-using GoldSavings.App.Client;
+﻿using GoldSavings.App.Client;
+using GoldSavings.App.Model;
 using GoldSavings.App.Services;
+using System.Diagnostics;
 namespace GoldSavings.App;
 
 class Program
 {
     static void Main(string[] args)
-    {
-        Console.WriteLine("Hello, Gold Investor!");
+	{
+        Func<DateTime, string> isLeapYear = (date) => {
+            return DateTime.IsLeapYear(date.Year) ? "Yes" : "No";
+        };
+		Console.WriteLine("Is it a leap year? " + isLeapYear(DateTime.Now));
 
-        // Step 1: Get gold prices
-        GoldDataService dataService = new GoldDataService();
-        DateTime startDate = new DateTime(2024,09,18);
-        DateTime endDate = DateTime.Now;
-        List<GoldPrice> goldPrices = dataService.GetGoldPrices(startDate, endDate).GetAwaiter().GetResult();
 
-        if (goldPrices.Count == 0)
-        {
-            Console.WriteLine("No data found. Exiting.");
-            return;
-        }
+		var randomCollection = new RandomCollection<GoldPrice>();
 
-        Console.WriteLine($"Retrieved {goldPrices.Count} records. Ready for analysis.");
+		Console.WriteLine("Generic List test\n");
+		Console.WriteLine($"Is the collection empty? {randomCollection.isEmpty()}");
+		Console.WriteLine("Adding some gold prices to the collection...");
 
-        // Step 2: Perform analysis
-        GoldAnalysisService analysisService = new GoldAnalysisService(goldPrices);
-        var avgPrice = analysisService.GetAveragePrice();
+		randomCollection.Add(new GoldPrice { Date = DateTime.Now, Price = 100 });
+		randomCollection.Add(new GoldPrice { Date = DateTime.Now - TimeSpan.FromDays(10), Price = 200 });
+		randomCollection.Add(new GoldPrice { Date = DateTime.Now - TimeSpan.FromDays(20), Price = 300 });
+		randomCollection.Add(new GoldPrice { Date = DateTime.Now - TimeSpan.FromDays(30), Price = 400 });
+		randomCollection.Add(new GoldPrice { Date = DateTime.Now - TimeSpan.FromDays(40), Price = 500 });
 
-        // Step 3: Print results
-        GoldResultPrinter.PrintSingleValue(Math.Round(avgPrice, 2), "Average Gold Price Last Half Year");
-
-        Console.WriteLine("\nGold Analyis Queries with LINQ Completed.");
-
-    }
+		Console.WriteLine($"Is the collection empty? {randomCollection.isEmpty()}");
+		GoldResultPrinter.PrintPrice(randomCollection.Get(2), "Retrieving gold prices from the collection:");
+	}
 }

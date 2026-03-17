@@ -1,6 +1,7 @@
-﻿using System;
+﻿using GoldSavings.App.Model;
+using System;
 using System.Collections.Generic;
-using GoldSavings.App.Model;
+using System.Diagnostics;
 
 namespace GoldSavings.App.Services
 {
@@ -19,5 +20,11 @@ namespace GoldSavings.App.Services
         {
             Console.WriteLine($"\n{title}: {value}");
         }
-    }
+
+        public static void PrintPrice(GoldPrice price, string title)
+        {
+			Console.WriteLine($"\n--- {title} ---");
+			Console.WriteLine($"{price.Date:yyyy-MM-dd} - {price.Price} PLN");
+		}
+	}
 }
